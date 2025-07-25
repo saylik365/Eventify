@@ -191,10 +191,10 @@ export const getCohostEvents = async (req, res) => {
 
 export const getGuestEvents = async (req, res) => {
   try {
-    const events = await Event.find({ guests: req.user._id })
+    const events = await Event.find({ 'guests.userId': req.user._id })
       .populate('owner', 'name email')
       .populate('coHosts', 'name email')
-      .populate('guests', 'name email');
+      .populate('guests.userId', 'name email');
     res.json(events);
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch guest events', error: err.message });

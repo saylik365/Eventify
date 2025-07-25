@@ -12,7 +12,7 @@ const CreateEvent = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, refreshRoles } = useAuth();
 
   if (user?.role === 'guest') {
     return (
@@ -30,6 +30,7 @@ const CreateEvent = () => {
     setLoading(true);
     try {
       await api.post('/events', { title, description, date, time, location });
+      await refreshRoles();
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create event');

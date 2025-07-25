@@ -97,7 +97,13 @@ const EventDetails = () => {
         <title>{event.title} | Eventify</title>
         <meta name="description" content={event.description?.slice(0, 150)} />
       </Helmet>
-      <h2 className="text-2xl font-bold mb-2">{event.title}</h2>
+      <h2 className="text-2xl font-bold mb-2 flex items-center gap-3">
+        {event.title}
+        {/* Role badge */}
+        {isOwner && <span className="px-2 py-1 rounded bg-purple-600 text-white text-xs font-semibold">Owner</span>}
+        {!isOwner && isCoHost && <span className="px-2 py-1 rounded bg-yellow-500 text-white text-xs font-semibold">Co-host</span>}
+        {!isOwner && !isCoHost && isGuest && <span className="px-2 py-1 rounded bg-blue-600 text-white text-xs font-semibold">Guest</span>}
+      </h2>
       <div className="mb-2 text-gray-600">{event.date ? new Date(event.date).toLocaleString() : ''}</div>
       <div className="mb-2 font-medium">Location: {event.location}</div>
       <div className="mb-4">{event.description}</div>

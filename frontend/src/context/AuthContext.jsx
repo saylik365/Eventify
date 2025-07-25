@@ -31,27 +31,29 @@ export const AuthProvider = ({ children }) => {
 
   // On token change, verify session with /auth/me and fetch roles
   useEffect(() => {
-    const verifySession = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-      try {
-        const res = await api.get('/auth/me');
-        if (!res.data || !res.data.role) throw new Error();
-        setUser(res.data);
-        setGlobalRole(res.data.role);
-        setOwnerOf(res.data.ownerOf || []);
-        setCohostOf(res.data.cohostOf || []);
-        setGuestOf(res.data.guestOf || []);
-      } catch {
-        toast.error('Session expired or unauthorized. Please log in again.');
-        logout();
-      }
-      setLoading(false);
-    };
-    verifySession();
+    refreshRoles();
+    // eslint-disable-next-line
   }, [token]);
+
+  const refreshRoles = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await api.get('/auth/me');
+      if (!res.data || !res.data.role) throw new Error();
+      setUser(res.data);
+      setGlobalRole(res.data.role);
+      setOwnerOf(res.data.ownerOf || []);
+      setCohostOf(res.data.cohostOf || []);
+      setGuestOf(res.data.guestOf || []);
+    } catch {
+      toast.error('Session expired or unauthorized. Please log in again.');
+      logout();
+    }
+    setLoading(false);
+  };
 
   const login = (newToken) => {
     localStorage.setItem('token', newToken);
@@ -72,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated, login, logout, globalRole, ownerOf, cohostOf, guestOf, loading }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated, login, logout, globalRole, ownerOf, cohostOf, guestOf, loading, refreshRoles }}>
       {!loading && children}
     </AuthContext.Provider>
   );

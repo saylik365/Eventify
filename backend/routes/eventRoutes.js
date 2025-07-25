@@ -23,6 +23,9 @@ const router = Router();
 
 // Public routes
 router.get('/', getEvents);
+router.get('/mine', auth, getMyEvents);
+router.get('/cohost', auth, getCohostEvents);
+router.get('/guest', auth, getGuestEvents);
 router.get('/:id', getEventById);
 
 // Protected routes
@@ -36,9 +39,6 @@ router.put('/:id/add-cohost', eventRole(['owner']), addCoHost);
 router.put('/:id/remove-cohost', eventRole(['owner']), removeCoHost);
 router.put('/:id/invite-guest', eventRole(['owner', 'cohost']), inviteGuest);
 router.put('/:id/remove-guest', eventRole(['owner', 'cohost']), removeGuest);
-router.get('/mine', auth, getMyEvents);
-router.get('/cohost', auth, getCohostEvents);
-router.get('/guest', auth, getGuestEvents);
 
 // Report an event or user
 router.post('/reports', auth, async (req, res) => {
